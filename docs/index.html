@@ -304,7 +304,7 @@ textarea:focus, input[type=tel]:focus { border-color: var(--accent); }
     if (!items.length) { showMenu(); return; }
     store('addr', addr); store('phone', phone); store('pay', pay);
     var payload = JSON.stringify({ items: items, address: addr, phone: phone, payment: pay });
-    if (tg && tg.initData) {
+    if (tg && tg.platform && tg.platform !== 'unknown') {
       tg.sendData(payload);
     } else {
       alert('Sinov rejimi (Telegramdan tashqarida):\n' + payload);
