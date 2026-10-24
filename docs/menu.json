@@ -1,0 +1,6 @@
+[
+  {"id": "osh", "name": "Osh", "emoji": "🍚", "price": 40000, "desc": ""},
+  {"id": "shorva", "name": "Sho‘rva", "emoji": "🍲", "price": 35000, "desc": ""},
+  {"id": "shashlik", "name": "Shashlik", "emoji": "🍢", "price": 15000, "desc": ""},
+  {"id": "hasib", "name": "Kala pocha hasib", "emoji": "🥘", "price": 45000, "desc": ""}
+]

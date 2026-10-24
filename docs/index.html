@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#faf3e6">
+<title>Xayitboy ota CHOYXONA</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+  --bg: #faf3e6;
+  --card: #fffdf8;
+  --ink: #2b2118;
+  --muted: #8a7a68;
+  --accent: #b4531f;
+  --accent-soft: #f7e3d3;
+  --line: #eadfcb;
+  --danger: #b3261e;
+}
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.35 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+
+.top { display: flex; align-items: center; gap: 12px; padding: 18px 16px 8px; }
+.mark {
+  width: 46px; height: 46px; border-radius: 15px; background: var(--accent);
+  display: grid; place-items: center; font-size: 25px; flex: none;
+}
+.top h1 { margin: 0; font: 700 20px/1.1 Georgia, "Times New Roman", serif; }
+.top p { margin: 3px 0 0; font-size: 11.5px; letter-spacing: .18em; color: var(--muted); }
+
+.grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  padding: 10px 14px 120px;
+}
+.card {
+  background: var(--card); border-radius: 18px; overflow: hidden;
+  box-shadow: 0 1px 0 var(--line), 0 8px 18px rgba(90, 55, 20, .08);
+  display: flex; flex-direction: column;
+}
+.pic {
+  aspect-ratio: 4 / 3; background: #f1e6d2; display: grid; place-items: center; overflow: hidden;
+}
+.pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ph { font-size: 46px; }
+.info { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
+.info h3 { margin: 0; font-size: 15.5px; line-height: 1.2; }
+.d { margin: 0; font-size: 12.5px; color: var(--muted); }
+.price { font-weight: 700; font-size: 14.5px; margin-top: auto; padding-top: 6px; }
+.ctl { margin-top: 8px; }
+
+.add {
+  width: 100%; height: 40px; border: 0; border-radius: 12px;
+  background: var(--accent); color: #fff; font-weight: 600; font-size: 15px;
+}
+.add:active { filter: brightness(.92); }
+.step {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 40px; border-radius: 12px; background: var(--accent-soft);
+}
+.step button {
+  width: 46px; height: 40px; border: 0; background: transparent;
+  font-size: 22px; font-weight: 700; color: var(--accent);
+}
+.step span { font-weight: 700; min-width: 22px; text-align: center; }
+
+.bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  padding: 24px 14px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, rgba(250,243,230,0), var(--bg) 40%);
+}
+.bar.hidden { display: none; }
+.bar button {
+  width: 100%; height: 56px; border: 0; border-radius: 16px;
+  background: var(--ink); color: #fff; font-weight: 600; font-size: 16px;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 18px;
+  box-shadow: 0 8px 20px rgba(43, 33, 24, .25);
+}
+.bar button.go { background: var(--accent); box-shadow: 0 8px 20px rgba(180, 83, 31, .3); }
+.cnt {
+  background: var(--accent); border-radius: 10px; min-width: 28px; height: 28px; padding: 0 7px;
+  display: grid; place-items: center; font-size: 14px;
+}
+
+.sheet { padding: 4px 16px 130px; }
+.back {
+  border: 0; background: transparent; color: var(--accent); font-weight: 600;
+  padding: 10px 0; font-size: 16px;
+}
+.sheet h2 { margin: 6px 0 12px; font: 700 21px/1.2 Georgia, "Times New Roman", serif; }
+.line {
+  display: flex; align-items: center; gap: 12px; background: var(--card);
+  border-radius: 16px; padding: 10px; margin-bottom: 10px;
+  box-shadow: 0 1px 0 var(--line);
+}
+.thumb { width: 58px; height: 58px; border-radius: 12px; overflow: hidden; background: #f1e6d2;
+  display: grid; place-items: center; flex: none; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb .ph { font-size: 28px; }
+.line .n { flex: 1; min-width: 0; }
+.line .n b { display: block; font-size: 15px; }
+.line .n small { color: var(--muted); font-size: 13px; }
+.line .step { width: 112px; flex: none; }
+.line .step button { width: 36px; }
+.sum { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 4px 18px; font-size: 17px; }
+.sum b { font-size: 20px; }
+
+label { display: block; font-size: 13px; color: var(--muted); margin: 14px 0 6px; }
+textarea, input[type=tel] {
+  width: 100%; border: 1.5px solid var(--line); border-radius: 14px; background: #fff;
+  padding: 12px 14px; font: inherit; font-size: 16px; color: var(--ink); resize: none; outline: none;
+}
+textarea:focus, input[type=tel]:focus { border-color: var(--accent); }
+.pay { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pay button {
+  height: 50px; border: 1.5px solid var(--line); border-radius: 14px; background: #fff; font-weight: 600;
+}
+.pay button.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.err { color: var(--danger); font-size: 13.5px; min-height: 20px; margin-top: 10px; }
+.msg { text-align: center; color: var(--muted); padding: 60px 24px; }
+.msg button { margin-top: 14px; border: 0; background: var(--accent); color: #fff; padding: 12px 22px; border-radius: 12px; font-weight: 600; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="mark">🍵</div>
+  <div>
+    <h1>Xayitboy ota</h1>
+    <p>CHOYXONA</p>
+  </div>
+</header>
+<main id="view"></main>
+<div id="bar" class="bar hidden"><button id="barBtn" type="button"></button></div>
+
+<script>
+(function () {
+  var tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) {
+    try { tg.ready(); tg.expand(); } catch (e) {}
+    try { tg.setHeaderColor('#faf3e6'); tg.setBackgroundColor('#faf3e6'); } catch (e) {}
+  }
+
+  var view = document.getElementById('view');
+  var bar = document.getElementById('bar');
+  var barBtn = document.getElementById('barBtn');
+  var MENU = [];
+  var cart = {};
+  var mode = 'menu';
+  var pay = 'naqd';
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' so‘m'; }
+  function qty(id) { return cart[id] || 0; }
+  function totals() {
+    var n = 0, s = 0;
+    MENU.forEach(function (m) { var q = qty(m.id); n += q; s += q * m.price; });
+    return { n: n, s: s };
+  }
+  function store(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+  function load(key) { try { return localStorage.getItem(key) || ''; } catch (e) { return ''; } }
+  function haptic() { try { tg.HapticFeedback.impactOccurred('light'); } catch (e) {} }
+
+  function stepper(id) {
+    var q = qty(id);
+    if (!q) return '<button type="button" class="add" data-inc="' + esc(id) + '">+ Qo‘shish</button>';
+    return '<div class="step"><button type="button" data-dec="' + esc(id) + '" aria-label="Kamaytirish">−</button>' +
+      '<span>' + q + '</span>' +
+      '<button type="button" data-inc="' + esc(id) + '" aria-label="Ko‘paytirish">+</button></div>';
+  }
+
+  function picHtml(m) {
+    return '<img src="rasmlar/' + encodeURIComponent(m.id) + '.jpg" alt="" loading="lazy" data-emoji="' + esc(m.emoji || '🍽') + '">';
+  }
+  function armImages(root) {
+    root.querySelectorAll('img[data-emoji]').forEach(function (img) {
+      img.addEventListener('error', function () {
+        img.parentNode.innerHTML = '<span class="ph">' + img.getAttribute('data-emoji') + '</span>';
+      });
+    });
+  }
+
+  function showMenu() {
+    mode = 'menu';
+    if (tg) { try { tg.BackButton.hide(); } catch (e) {} }
+    if (!MENU.length) {
+      view.innerHTML = '<div class="msg">Menyu hozircha bo‘sh.</div>';
+      updateBar();
+      return;
+    }
+    view.innerHTML = '<div class="grid">' + MENU.map(function (m) {
+      return '<div class="card"><div class="pic">' + picHtml(m) + '</div>' +
+        '<div class="info"><h3>' + esc(m.name) + '</h3>' +
+        (m.desc ? '<p class="d">' + esc(m.desc) + '</p>' : '') +
+        '<div class="price">' + fmt(m.price) + '</div>' +
+        '<div class="ctl" data-ctl="' + esc(m.id) + '">' + stepper(m.id) + '</div></div></div>';
+    }).join('') + '</div>';
+    armImages(view);
+    updateBar();
+    window.scrollTo(0, 0);
+  }
+
+  function updateCtl(id) {
+    var el = view.querySelector('[data-ctl="' + id.replace(/"/g, '') + '"]');
+    if (el) el.innerHTML = stepper(id);
+  }
+
+  function renderLines() {
+    var box = document.getElementById('lines');
+    if (!box) return;
+    box.innerHTML = MENU.filter(function (m) { return qty(m.id); }).map(function (m) {
+      return '<div class="line"><div class="thumb">' + picHtml(m) + '</div>' +
+        '<div class="n"><b>' + esc(m.name) + '</b><small>' + fmt(m.price * qty(m.id)) + '</small></div>' +
+        '<div class="step"><button type="button" data-dec="' + esc(m.id) + '">−</button><span>' + qty(m.id) +
+        '</span><button type="button" data-inc="' + esc(m.id) + '">+</button></div></div>';
+    }).join('');
+    armImages(box);
+    document.getElementById('sum').textContent = fmt(totals().s);
+  }
+
+  function showCart() {
+    if (!totals().n) { showMenu(); return; }
+    mode = 'cart';
+    if (tg) { try { tg.BackButton.show(); } catch (e) {} }
+    view.innerHTML = '<div class="sheet">' +
+      '<button type="button" class="back" data-go="menu">‹ Menyu</button>' +
+      '<h2>Savatcha</h2><div id="lines"></div>' +
+      '<div class="sum"><span>Jami</span><b id="sum"></b></div>' +
+      '<h2>Yetkazib berish</h2>' +
+      '<label for="addr">Manzil</label>' +
+      '<textarea id="addr" rows="2" placeholder="Ko‘cha, uy raqami, mo‘ljal"></textarea>' +
+      '<label for="phone">Telefon raqami</label>' +
+      '<input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+998 90 123 45 67">' +
+      '<label>To‘lov turi</label>' +
+      '<div class="pay"><button type="button" data-pay="naqd">💵 Naqd</button>' +
+      '<button type="button" data-pay="karta">💳 Karta</button></div>' +
+      '<div class="err" id="err" role="alert"></div></div>';
+    document.getElementById('addr').value = load('addr');
+    document.getElementById('phone').value = load('phone');
+    ['addr', 'phone'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', function () {
+        document.getElementById('err').textContent = '';
+      });
+    });
+    setPay(load('pay') === 'karta' ? 'karta' : 'naqd');
+    renderLines();
+    updateBar();
+    window.scrollTo(0, 0);
+  }
+
+  function setPay(p) {
+    pay = p;
+    document.querySelectorAll('[data-pay]').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-pay') === p);
+    });
+  }
+
+  function updateBar() {
+    var t = totals();
+    if (mode === 'menu') {
+      bar.classList.toggle('hidden', !t.n);
+      barBtn.className = '';
+      barBtn.setAttribute('data-act', 'cart');
+      barBtn.innerHTML = '<span class="cnt">' + t.n + '</span><span>Savatchani ko‘rish</span><b>' + fmt(t.s) + '</b>';
+    } else {
+      bar.classList.remove('hidden');
+      barBtn.className = 'go';
+      barBtn.setAttribute('data-act', 'submit');
+      barBtn.innerHTML = '<span>Buyurtma berish</span><b>' + fmt(t.s) + '</b>';
+    }
+  }
+
+  function change(id, d) {
+    var q = Math.max(0, Math.min(50, qty(id) + d));
+    if (q) cart[id] = q; else delete cart[id];
+    haptic();
+    if (mode === 'menu') { updateCtl(id); updateBar(); }
+    else if (!totals().n) { showMenu(); }
+    else { renderLines(); updateBar(); }
+  }
+
+  function submit() {
+    var addrEl = document.getElementById('addr');
+    var phoneEl = document.getElementById('phone');
+    var err = document.getElementById('err');
+    var addr = addrEl.value.trim();
+    var phone = phoneEl.value.trim();
+    if (addr.length < 5) { err.textContent = 'Manzilni yozing (ko‘cha, uy raqami).'; addrEl.focus(); return; }
+    if (phone.replace(/\D/g, '').length < 9) { err.textContent = 'Telefon raqamini to‘liq yozing.'; phoneEl.focus(); return; }
+    err.textContent = '';
+    var items = MENU.filter(function (m) { return qty(m.id); }).map(function (m) { return { id: m.id, qty: qty(m.id) }; });
+    if (!items.length) { showMenu(); return; }
+    store('addr', addr); store('phone', phone); store('pay', pay);
+    var payload = JSON.stringify({ items: items, address: addr, phone: phone, payment: pay });
+    if (tg && tg.initData) {
+      tg.sendData(payload);
+    } else {
+      alert('Sinov rejimi (Telegramdan tashqarida):\n' + payload);
+    }
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    if (b.hasAttribute('data-inc')) change(b.getAttribute('data-inc'), 1);
+    else if (b.hasAttribute('data-dec')) change(b.getAttribute('data-dec'), -1);
+    else if (b.hasAttribute('data-pay')) setPay(b.getAttribute('data-pay'));
+    else if (b.getAttribute('data-go') === 'menu') showMenu();
+    else if (b.id === 'barBtn') { if (b.getAttribute('data-act') === 'cart') showCart(); else submit(); }
+    else if (b.id === 'retry') start();
+  });
+  if (tg) { try { tg.BackButton.onClick(showMenu); } catch (e) {} }
+
+  function start() {
+    view.innerHTML = '<div class="msg">Yuklanmoqda…</div>';
+    fetch('menu.json?v=' + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (data) { MENU = data; showMenu(); })
+      .catch(function () {
+        view.innerHTML = '<div class="msg">Menyuni yuklab bo‘lmadi.<br><button type="button" id="retry">Qayta urinish</button></div>';
+      });
+  }
+  start();
+})();
+</script>
+</body>
+</html>
